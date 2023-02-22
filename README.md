@@ -5,7 +5,7 @@ plot_map_script.py runs all the required functions to import and plot maps of th
 ## Importing results file
 import_file.py imports the required results file
 ## Coordinates of nodes
-import_coord.py takes in a results file (output of imporrt_file) and outputs the coordinates of all the nodes.
+import_coord.py takes in a results file (output of import_file) and outputs the coordinates of all the nodes.
 ## Plotting the cross section
 plot_outline.py takes the coordinates of all the nodes (output of import_coord) and picks the nodes that lie on the required cross section. The outline is plotted by picking the nodes that lie on the boundary of the cross section, and finally both the outline and nodes are plotted.
 ## Importing and calculating variables
