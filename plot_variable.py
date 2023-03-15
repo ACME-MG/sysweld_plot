@@ -6,13 +6,13 @@ import matplotlib.colors as colors
 #%% Plot variable on cross section figure
 #Function to plot variable on cross section figure
 def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
-    parameter_sec=None,variable=None,title=None,figure_no=None,
-    title_text=18,unit=None,
+    parameter_sec=None,variable=None,plot_title=None,figure_no=None,
+    title_text=18,
     max_data=None,min_data=None,
     cMin=0,cMax=100,cticks_no=11,clevels_no=100,cbar_over_value=None,cscheme='jet',cbar_extend='both',cnorm=None,
-    cbar_text=18,cbar_length=5,cbar_width=1, 
+    cbar_text=18,cbar_length=5,cbar_tick_width=1, cbar_title=None,
     cbar_bottom_offset=0.4,cbar_height=0.12,
-    folder=None): 
+    folder=None,export_name=None): 
     """
     Required Arguments:
         coord_sec: coordinates of cross section
@@ -24,11 +24,10 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
         Plot:
             paramater: dataframe name, default: None
             variable: column name in dataframe, e.g. 'XX'
-            title: title for the plot, e.g. 'Transverse Stress'
+            plot_title: title for the plot, e.g. 'Transverse Stress'
             figure_no: figure number to be plotted on, e.g. 0
         Title/Axes:
         title_text: fontsize of title, default: 18
-        unit: unit of the variable, e.g. 'MPa'
         Data:
             max_data: maximum value data can have (remove errors from extrapolating above max_data)
             min_data: minimum value data can have (remove errors from extrapolating below min_data)
@@ -44,13 +43,18 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
             cbar_text: fontsize of colour bar ticks, default: 18
             cbar_length: length of colour bar ticks, default: 5
             cbar_width: width of colour bar ticks, default: 1
+            cbar_title: title of colour bar, default: None
         Colour Bar Position:
             cbar_bottom_offset: offset of the colour bar from the bottom of the plot (% of height of plot), default: 0.4
             cbar_height: height of the colour bar (% of height of plot), default: 0.12
         Save:
             folder: folder to save plot to, default: None
+            export_name: name of exported file, default: None
     """
-    Zgrid = griddata(coord_sec[[section_axes[0], section_axes[1]]], parameter_sec[variable], (Xgrid, Ygrid), method='cubic') #extrapolate variable values to meshgrid
+
+    nan_ind=parameter_sec[variable].isnull() #indices where there are nan values
+
+    Zgrid=griddata((coord_sec.loc[~nan_ind,section_axes[0]],coord_sec.loc[~nan_ind,section_axes[1]]),parameter_sec.loc[~nan_ind,variable], (Xgrid, Ygrid), method='cubic') #plot non-nan values
 
     if min_data!=None or max_data!=None: #if max_data or min_data has a value, clip Zgrid to those values
         Zgrid=np.clip(Zgrid,min_data,max_data)
@@ -61,12 +65,8 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
 
     #Plot variable
     plt.figure(figure_no) #Plot on figure 0
-    if unit==None:
-        plt.title(title+' Prediction', fontsize = title_text)
-    else:
-        plt.title(title+' Prediction ['+unit+']', fontsize = title_text) #Title of plot
-    
-    
+    plt.title(plot_title, fontsize = title_text) #plot title
+
     class MidpointNormalize(colors.Normalize): #normalise levels for colour bar
         def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
             self.midpoint = midpoint
@@ -96,10 +96,13 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
     
     cbar=plt.colorbar(im, norm=cnorm,orientation='horizontal', cax=cax,ticks=cticks,extend=cbar_extend,extendfrac=0.03) #fraction of colour bar for extend arrows
  
-    cbar.ax.tick_params(labelsize=cbar_text,length=cbar_length,width=cbar_width) #colour bar tick size
+    cbar.ax.tick_params(labelsize=cbar_text,length=cbar_length,width=cbar_tick_width) #colour bar tick size
 
-    plt.savefig(folder+title+' Map', bbox_inches='tight', dpi=300)
+    if cbar_title!=None: #colourbar title below colourbar
+        cbar.ax.set_xlabel(cbar_title,fontsize=cbar_text,labelpad=10)
+
+    plt.savefig(folder+export_name+' Map', bbox_inches='tight', dpi=300)
 
     cbar.remove() #Remove plot and colourbar for next plot
 
-    print('Plotted map for '+title)
+    print('Plotted map for '+plot_title)
