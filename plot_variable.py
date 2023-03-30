@@ -8,7 +8,7 @@ import matplotlib.colors as colors
 def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
     parameter_sec=None,variable=None,plot_title=None,figure_no=None,
     title_text=18,
-    max_data=None,min_data=None,
+    max_data=None,min_data=None,cbar = True,
     cMin=0,cMax=100,cticks_no=11,clevels_no=100,cbar_over_value=None,cscheme='jet',cbar_extend='both',cnorm=None,
     cbar_text=18,cbar_length=5,cbar_tick_width=1, cbar_title=None,
     cbar_bottom_offset=0.4,cbar_height=0.12,
@@ -32,6 +32,7 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
             max_data: maximum value data can have (remove errors from extrapolating above max_data)
             min_data: minimum value data can have (remove errors from extrapolating below min_data)
         Colour Bar:
+            cbar: whether to plot colour bar, default: True
             cMin: minimum value for the colour bar, default: 0
             cMax: maximum value for the colour bar, default: 100
             cticks_no: number of ticks on the colour bar, default: 11
@@ -67,6 +68,8 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
     plt.figure(figure_no) #Plot on figure 0
     plt.title(plot_title, fontsize = title_text) #plot title
 
+
+
     class MidpointNormalize(colors.Normalize): #normalise levels for colour bar
         def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
             self.midpoint = midpoint
@@ -90,19 +93,23 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
     levels = np.linspace(cMin, cMax, clevels_no) #Colour bar levels
     im=plt.contourf(Xgrid, Ygrid, Zgrid, levels, vmin=cMin, vmax=cMax, cmap=cscheme,extend=cbar_extend,norm=cnorm) #Plot variable
 
-    #colour bar in new axes
-    left, bottom, width, height = ax.get_position().bounds #position of plot
-    cax = fig.add_axes([left, bottom-cbar_bottom_offset, width, height * cbar_height]) #position and size of new plot
+    if cbar == True:
+        #colour bar in new axes
+        left, bottom, width, height = ax.get_position().bounds #position of plot
+        cax = fig.add_axes([left, bottom-cbar_bottom_offset, width, height * cbar_height]) #position and size of new plot
+        
+        cbar=plt.colorbar(im, norm=cnorm,orientation='horizontal', cax=cax,ticks=cticks,extend=cbar_extend,extendfrac=0.03) #fraction of colour bar for extend arrows
+
+        cbar.ax.tick_params(labelsize=cbar_text,length=cbar_length,width=cbar_tick_width) #colour bar tick size
+
+        if cbar_title!=None: #colourbar title below colourbar
+            cbar.ax.set_xlabel(cbar_title,fontsize=cbar_text,labelpad=10)
+
+        plt.savefig(folder+export_name+' Map', bbox_inches='tight', dpi=300)
+
+        cbar.remove() #Remove plot and colourbar for next plot
+    else:
+        plt.savefig(folder+export_name+' Map', bbox_inches='tight', dpi=300)
     
-    cbar=plt.colorbar(im, norm=cnorm,orientation='horizontal', cax=cax,ticks=cticks,extend=cbar_extend,extendfrac=0.03) #fraction of colour bar for extend arrows
- 
-    cbar.ax.tick_params(labelsize=cbar_text,length=cbar_length,width=cbar_tick_width) #colour bar tick size
-
-    if cbar_title!=None: #colourbar title below colourbar
-        cbar.ax.set_xlabel(cbar_title,fontsize=cbar_text,labelpad=10)
-
-    plt.savefig(folder+export_name+' Map', bbox_inches='tight', dpi=300)
-
-    cbar.remove() #Remove plot and colourbar for next plot
 
     print('Plotted map for '+plot_title)
