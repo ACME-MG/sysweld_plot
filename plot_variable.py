@@ -68,8 +68,6 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
     plt.figure(figure_no) #Plot on figure 0
     plt.title(plot_title, fontsize = title_text) #plot title
 
-
-
     class MidpointNormalize(colors.Normalize): #normalise levels for colour bar
         def __init__(self, vmin=None, vmax=None, midpoint=None, clip=False):
             self.midpoint = midpoint
@@ -111,5 +109,4 @@ def plot_variable(coord_sec,Xgrid,Ygrid,fig,ax,mask,section_axes=None,
     else:
         plt.savefig(folder+export_name+' Map', bbox_inches='tight', dpi=300)
     
-
     print('Plotted map for '+plot_title)
