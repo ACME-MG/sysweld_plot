@@ -114,8 +114,7 @@ def plot_section(coord=None,section_axes=None,section_coord=None,fig_no=0,resolu
         else:
             plt.xticks(xticks, map(lambda x: "%g" % x, xticks-offset_ticks_x),fontsize=textsize) #offset x axis ticks to start at zero
     else: #turn off ticks
-        xticks=[]
-        plt.xticks(xticks)
+        plt.tick_params(bottom = False, labelbottom = False)
 
     if yticks_vis==True:
         yticks=np.arange(y_min, y_max+ystep*0.01, ystep) #axes ticks
@@ -124,8 +123,7 @@ def plot_section(coord=None,section_axes=None,section_coord=None,fig_no=0,resolu
         else:
             plt.yticks(yticks, map(lambda y: "%g" % y, yticks-y_min),fontsize=textsize) #offset x axis ticks to start at zero
     else: #turn off ticks
-        yticks=[]
-        plt.yticks(yticks)
+        plt.tick_params(left = False, labelleft = False)
 
     ax = plt.gca()
     ax.tick_params(width=tick_width)
