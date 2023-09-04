@@ -11,8 +11,8 @@ t0=time.time()
 path='/mnt/d/SYSWELD/wendy' #Path to results file
 file_name='TJOINT-1_V_POST1000.erfh5' #title of results file
 sysweld_app='weld' #min_weld (POST1000,POST2000), weld (VPOST100,VPOST2000), or assembly (from visual assembly)
-axes=['Y','Z','X'] #axes to plot section on (plot on first two axes, third axis is normal to cross section)
-save_folder='phase/' #folder to save results into 
+axes=['X','Y','Z'] #axes to plot section on (plot on first two axes, third axis is normal to cross section)
+save_folder='V27/' #folder to save results into 
 
 parameter = 'phase' #parameter to plot (fusion, phase, hardness, stress, peeq)
 #%% Plot outline of cross section
@@ -25,7 +25,7 @@ plot_section(coord_var,section_axes = axes, section_coord = 0, fig_no = 0, resol
 fig_width = 15, outline_width = 3.5, outline_file = 'outline_t_section.xlsx', nodes_vis = True, textsize = 18, plot_title = 'Outline and Nodes',
 spines_off = ['top','bottom','left','right'],spine_xloc = -100, spine_yloc = None,
 xticks_vis = True, yticks_vis = True, xstep = 5,ystep = 5, offset_ticks_x = 0, offset_ticks_y = 0, tick_width = 1,
-crop_min_x = -20, crop_max_x = 20, crop_min_y = None, crop_max_y = 20, xlabel = ' Y [mm]', ylabel = 'Z [mm]',
+crop_min_x = -20, crop_max_x = 20, crop_min_y = None, crop_max_y = 20, xlabel = ' X [mm]', ylabel = 'Y [mm]',
 folder = save_folder,export_name = 'outline of cross section')
 #%%POST1000/VPOST1000: plot fusion zone, phases
 if parameter == 'fusion':
