@@ -1,4 +1,7 @@
 #%% Import functions
+import sys
+sys.path.append('/home/wjux/projects/sysweld_plot') 
+
 from import_file import *
 from import_coord import *
 from import_var import *
