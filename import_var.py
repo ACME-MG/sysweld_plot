@@ -144,16 +144,16 @@ def import_var(file,sysweld_app, ind_sec, parameter, state_no = -1, pent_ele = F
                 var_col_name (list):    list of column names for columns that hold average of node values for each element
             """
             for i in range(len(sum_col_name)): #for each row in ele_node_id
-                node_id_sec[sum_col_name[i]]=0 #add column to node_id_sec for sum of parameter values
-                node_id_sec[var_col_name[i]]=0 #add column to node_id_sec for average of parameter values
-            node_id_sec['count']=0 #add column to node_id_sec for number of nodes
+                node_id_sec[sum_col_name[i]] = 0.0 #add column to node_id_sec for sum of parameter values
+                node_id_sec[var_col_name[i]] = 0.0 #add column to node_id_sec for average of parameter values
+            node_id_sec['count'] = 0 #add column to node_id_sec for number of nodes
 
             #for each element, if a node is in the cross section, add the parameter value of that element to the node id sum and add 1 to the count
             for i in range(len(ele_node_id_param)): #for each row in ele_node_id
                 for j in range(1,9): #for each value in ele_node_id row (only in node id columns)
                     if ele_node_id_param.iloc[i,j] in node_id_sec['id'].values: #if node id is in node id's on cross section
                         for k in range(len(sum_col_name)):
-                            node_id_sec.loc[node_id_sec['id']==ele_node_id_param.iloc[i,j],sum_col_name[k]]+= ele_node_id_param.iloc[i,k+9]
+                            node_id_sec.loc[node_id_sec['id']==ele_node_id_param.iloc[i,j],sum_col_name[k]] += ele_node_id_param.iloc[i,k+9]
                         node_id_sec.loc[node_id_sec['id']==ele_node_id_param.iloc[i,j],'count']+=1 #add 1 to count
                 if i%10000==0: #print progress every 10000 elements
                     print(str(i)+' elements done' )
