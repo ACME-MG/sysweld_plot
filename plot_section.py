@@ -111,7 +111,7 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
         s = GeoSeries(map(Point,zip(coord_sec[section_axes[0]],coord_sec[section_axes[1]]))) # create geoseries of points from nodes
         mask_nodes = alpha_shape.buffer(1e-2).contains(s) # find nodes inside outline
         mask_nodes = mask_nodes.values # indices of nodes inside outline
-        plt.plot(coord_sec[section_axes[0]][mask_nodes],coord_sec[section_axes[1]][mask_nodes],',k') # plot nodes inside outline
+        plt.plot(coord_sec[section_axes[0]][mask_nodes].values,coord_sec[section_axes[1]][mask_nodes].values,',k') # plot nodes inside outline
 
     # Format spines
     ax.spines[spines_off].set_visible(False) # turn off axes spines listed in spines_off
