@@ -1,7 +1,7 @@
 # sysweld_plot
 Plot maps of data from SYSWELD result files.
-## script
-This script runs all the required functions to import and plot maps of the SYSWELD result files. This should be the only script that users interact with. The parameters section can be changed to modify the plots. 
+## Main Script
+script.py runs all the required functions to import and plot maps of the SYSWELD result files. This should be the only script that users interact with. The parameters section can be changed to modify the plots. 
 
 This currently can plot a cross section of the model, and a colour map of a variable on this cros section. The variables that have been coded are the fusion zone (based on max temp), phases, hardness, stresses, and peeq.
 
