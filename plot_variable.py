@@ -112,9 +112,11 @@ def plot_variable(coord_sec, Xgrid, Ygrid, fig, ax, mask, section_axes = None,
         if cbar_title != None: # colourbar title visibility
             cbar.ax.set_xlabel(cbar_title, fontsize = cbar_text, labelpad = cbar_title_pad) # colourbar title
         plt.savefig(folder + export_name, bbox_inches = 'tight', dpi = 300) # save figure
+        for i in im.collections:
+            i.remove()
+        # im.collections[0].remove() # remove colour map for next plot 
         cbar.remove() # remove colourbar for next plot
     else:
         plt.savefig(folder+export_name+' Map', bbox_inches='tight', dpi=300)
-        cbar.remove() # remove colourbar for next plot
     
     print('Plotted map')

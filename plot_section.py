@@ -22,7 +22,7 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
 
     Arguments:
         Cross section:
-            coord (dataframe):          coordinates of entire cross section
+            coord (dataframe):          coordinates of nodes of entire model
             section_axes (list):        list of three axes with plot on first two axes and normal to third axis, default: ['X','Y','Z']
             section_coord (float):      coordinate along third axis to plot cross section at, default: 0
             resolution (float):         spacing of meshgrid (smaller value gives a more accurate map, but takes longer), default 0.1
