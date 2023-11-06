@@ -8,7 +8,7 @@ path_to_code        = '/home/wjux/projects/sysweld_plot'
 path_to_results     = '/mnt/d/SYSWELD/wendy/waam/coarse_v29/coarse_iso/03_RESU' #Path to results file
 results_file_name   = 'TG4_WELD_POST2000.erfh5' #title of results file
 sysweld_app         = 'min_weld' 
-                       # min_weld (POST1000,POST2000), weld (VPOST100,VPOST2000), or assembly (from visual assembly)
+                       # min_weld (POST1000,POST2000), weld (HVPOST1000,VPOST1000,VPOST2000), or assembly (from visual assembly)
 pent_ele            = False # whether there are penta elements
 state_no            = -1 # state number to plot results at
 
@@ -186,7 +186,7 @@ file = import_file(path_to_results, results_file_name)
 coord_var = import_coord(file, sysweld_app) 
 
 # plot cross-section outline and nodes
-ind_sec, coord_sec, Xgrid, Ygrid, fig, ax, mask = plot_section(coord_var, section_axes = section_axes, section_coord = section_coord, resolution = resolution, outline_file = outline_file, nodes_vis = nodes_vis, xstep = xstep, ystep = ystep, crop_min_x = None, crop_max_x = None, crop_min_y = None, crop_max_y = 105, xlabel = ' X [mm]', ylabel = 'Y [mm]', folder = path_to_save, export_name = section_file)
+ind_sec, coord_sec, Xgrid, Ygrid, fig, ax, mask = plot_section(coord_var, section_axes = section_axes, section_coord = section_coord, resolution = resolution, outline_file = outline_file, nodes_vis = nodes_vis, xstep = xstep, ystep = ystep, crop_min_x = crop_min_x, crop_max_x = crop_max_x, crop_min_y = crop_min_y, crop_max_y = crop_max_y, xlabel = xlabel, ylabel = ylabel, folder = path_to_save, export_name = section_file)
 
 # calculate variable values on cros section only
 var_sec = import_var(file, sysweld_app, ind_sec, variable, state_no = state_no, pent_ele = pent_ele)

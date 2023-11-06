@@ -6,7 +6,7 @@ from shapely.geometry import Point, Polygon
 from geopandas import GeoSeries
 import pandas as pd
 #%%
-def line_on_section(coord = None, parameter_sec = None, line_axes = ['X','Y','Z'], section_coord = 0.0, line_pos = 0.0,
+def line_on_section(coord = None, parameter_sec = None, section_axes = ['X','Y','Z'], line_axes = ['X','Y','Z'], section_coord = 0.0, line_pos = 0.0,
             fig_no = 0, textsize = 18, plot_title = 'Line on Cross Section',
             folder = None, export_name = 'line on cross section'):
 
@@ -17,6 +17,7 @@ def line_on_section(coord = None, parameter_sec = None, line_axes = ['X','Y','Z'
         Line:
             coord (dataframe):          coordinates of nodes of entire model
             parameter_sec (dataframe):  parameter values of nodes of the cross section
+            section_axes (list):        list of three axes with plot on first two axes and normal to third axis, default: ['X','Y','Z']
             line_axes (list):           first axis is what line is constant for, second axis is what line varies on, third axis is normal to cross section default: ['X','Y','Z']
             section_coord (float):      coordinate along third axis to plot cross section at, default: 0
             line_pos (float):           coordinate which line is constant for, default: 0
@@ -44,7 +45,7 @@ def line_on_section(coord = None, parameter_sec = None, line_axes = ['X','Y','Z'
     # plot on figure
     plt.figure(fig_no) # same figure from cross section outline
     plt.title(plot_title, fontsize = textsize)
-    im = plt.plot(data_line[line_axes[0]].values, data_line[line_axes[1]].values, '-' ,color = 'red') # plot line on cross section
+    im = plt.plot(data_line[section_axes[0]].values, data_line[section_axes[1]].values, '-' ,color = 'red') # plot line on cross section
 
     # save figure
     plt.savefig(folder + export_name, bbox_inches = 'tight', dpi = 300) # save plot, high resolution

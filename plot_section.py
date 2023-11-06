@@ -91,6 +91,7 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
     # Find outline of cross section
     if outline_file != None: # outline taken from excel file
         outline = pd.read_excel(outline_file) # import list of points for outline from excel file
+        outline = outline[[section_axes[0],section_axes[1]]] # only take columns for horizontal and vertical axes
         alpha_shape = Polygon(outline) # convert outline to shapely polygon
     else: # automatically find outline from nodes in cross section
         alpha_shape = alphashape.alphashape(coord_sec[[section_axes[0],section_axes[1]]],0.2) # more alphashape parameters at bottom of script

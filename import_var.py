@@ -110,13 +110,17 @@ def import_var(file,sysweld_app, ind_sec, parameter, state_no = -1, pent_ele = F
         node_id_sec=node_id.loc[ind_sec]
         node_id_sec=node_id_sec.rename(columns={0:'id'})
 
-        def find_ele_node_id_param(col_names,param_name): #function to find parameter values for each element
+        def find_ele_node_id_param(col_names,param_name,sysweld_app = sysweld_app): #function to find parameter values for each element
+            if sysweld_app == 'min_weld':
+                zone = 'ZONE1_set0'
+            elif sysweld_app == 'assembly':
+                zone = 'ZONE1_set1'
             #Parameter element ids
-            param_entid=node_path[param_name]['ZONE1_set0']['erfblock']['entid']
+            param_entid=node_path[param_name][zone]['erfblock']['entid']
             param_entid=pd.DataFrame(param_entid)
             param_entid=param_entid.rename(columns={0:'id'})
             #Parameter results
-            param_res=node_path[param_name]['ZONE1_set0']['erfblock']['res']
+            param_res=node_path[param_name][zone]['erfblock']['res']
             param_res=pd.DataFrame(param_res)
             param_res=param_res.rename(columns=col_names) #rename columns
             #combine parameter element ids and stress results
