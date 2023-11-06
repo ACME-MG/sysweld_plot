@@ -197,7 +197,7 @@ for i in range(len(variable_name)):
 
 # plot line on cross section and export variable values on line to csv (optional)
 if plot_line == True:
-    line_on_section(coord = coord_var, parameter_sec = var_sec, line_axes = line_axes, section_coord = section_coord, line_pos = line_coord, folder = path_to_save, export_name = line_section_file)
+    line_on_section(coord = coord_var, parameter_sec = var_sec, section_axes = section_axes, line_axes = line_axes, section_coord = section_coord, line_pos = line_coord, folder = path_to_save, export_name = line_section_file)
 #%% Plot variable values on line (can rerun this section with parameters and libraries as csv already exported)
 if plot_line == True:
     plot_variable_on_line(data_file = path_to_save + 'data_line.csv', x_data_title = line_axes[1], y_data_title = variable_name, plot_title = line_plot_title, x_label = line_xlabel, y_label = line_ylabel, plot_width = 5, plot_height = 5, curve_colour = curve_colour, curve_label = variable_label, curve_lw = 2, save_title = path_to_save + line_file, x_min = line_x_min, x_max = line_x_max, x_step = line_x_step, y_min = line_y_min, y_max = line_y_max, y_step = line_y_step, legend_fontsize = 12, plot_fontsize = 12, title_fontsize = 12)
