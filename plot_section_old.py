@@ -7,7 +7,7 @@ from geopandas import GeoSeries
 import pandas as pd
 #%%
 def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, fig_no = 0, resolution = 0.1,
-                fig_width = 15, outline_width = 1, outline_file = None, outline_vis = True, nodes_vis = True, textsize = 18, plot_title = 'Outline and Nodes', 
+                fig_width = 15, outline_width = 1, outline_file = None, nodes_vis = True, textsize = 18, plot_title = 'Outline and Nodes', 
                 spines_off = ['top','bottom','left','right'],spine_xloc = None,spine_yloc = None,
                 xticks_vis = True, yticks_vis = True, xstep = 10,ystep = 10, offset_ticks_x = 0, offset_ticks_y = 0, tick_width = 1,
                 crop_min_x = None, crop_max_x = None, crop_min_y = None, crop_max_y = None, xlabel = None, ylabel = None,
@@ -32,7 +32,6 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
             fig_width (float):          width of figure in inches, default: 15
             outline_file (string):      name of excel file with list of points for outline
             outline_width (float):      width of line for outline, default: 1
-            outline_vis (bool):         plotting the outline of cross section, default: True
             nodes_vis (bool):           plotting the nodes of cross section, default: True
             textsize (float):           font size for title and axis ticks, default: 18
             plot_title (string):        title of plot, default: 'Outline and Nodes'
@@ -45,14 +44,14 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
             yticks_vis (bool):          vertical axis ticks visibility, default: True
             xstep (float):              step size for horizontal axis, default: 10
             ystep (float):              step size for vertical axis, default: 10
-            offset_ticks_x (float/bool):offset horizontal axis ticks by float value, or so that it starts at 0 (True), default: 0
-            offset_ticks_y (float/bool):offset vertical axis ticks by float value, or so that it starts at 0 (True) default: 0
+            offset_ticks_x (float):     offset horizontal axis ticks by this value, default: 0
+            offset_ticks_y (float):     offset vertical axis ticks by this value, default: 0
             tick_width (float):         width of axis ticks, default 1
         Axes:
             crop_min_x (float):         crop horizontal axis minimum value, default: min of original horizontal axis
             crop_max_x (float):         crop horizontal axis maximum value, default: max of original horizontal axis
             crop_min_y (float):         crop vertical axis minimum value, default: min of original vertical axis
-            crop_max_y (float):         crop vertical axis maximum value, default: max of original vertical axis
+            crop_max_y (float):         crop vertical axis maximum value, default: max of origina vertical axis
             xlabel (string):            horizontal axis label, default: no label 
             ylabel (string):            vertical axis label, default: no label 
         Save:
@@ -76,16 +75,6 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
     Yrange = np.arange(y_min, y_max + resolution, resolution) # range of values in vertical axis spaced by resolution
     Xgrid, Ygrid = np.meshgrid(Xrange,Yrange) #create meshgrid
 
-    # Optional crop of cross section 
-    if crop_min_x != None:
-        x_min = crop_min_x
-    if crop_max_x != None:
-        x_max = crop_max_x
-    if crop_min_y != None:
-        y_min = crop_min_y
-    if crop_max_y != None:
-        y_max = crop_max_y
-
     # Find aspect ratio of cross section to size figure for cross section
     x_diff = x_max - x_min; y_diff = y_max - y_min # differences between max and min values of axes
     aspect_ratio = y_diff/x_diff #aspect ratio of cross section
@@ -95,9 +84,9 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
     # Set up figure
     fig = plt.figure(fig_no, figsize=(fig_width, fig_width*aspect_ratio)) # figure size based on aspect ratio, set width of 15
     ax = plt.gca() # get current axes
-    ax.set_title(plot_title, fontsize = textsize)
-    ax.set_aspect('equal')
-    ax.set_xlim(x_min,x_max); ax.set_ylim(y_min - 0.1,y_max + 0.1) # Limits for axes (extra margin to plot outline)
+    plt.title(plot_title, fontsize = textsize)
+    plt.axis('equal') # equal scale for both axes
+    plt.xlim(x_min,x_max); plt.ylim(y_min - 0.1,y_max + 0.1) # Limits for axes (extra margin to plot outline)
 
     # Find outline of cross section
     if outline_file != None: # outline taken from excel file
@@ -116,19 +105,17 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
 
     # Plot outline of cross section
     x_outline,y_outline = alpha_shape.exterior.xy # exterior of cross section
-    if outline_vis == True:
-        ax.plot(x_outline,y_outline,linewidth=outline_width,color='black') # plot outline
+    plt.plot(x_outline,y_outline,linewidth=outline_width,color='black') # plot outline
 
     # Plot nodes of cross section
     if nodes_vis == True: 
         s = GeoSeries(map(Point,zip(coord_sec[section_axes[0]],coord_sec[section_axes[1]]))) # create geoseries of points from nodes
         mask_nodes = alpha_shape.buffer(1e-2).contains(s) # find nodes inside outline
         mask_nodes = mask_nodes.values # indices of nodes inside outline
-        ax.plot(coord_sec[section_axes[0]][mask_nodes].values,coord_sec[section_axes[1]][mask_nodes].values,',k') # plot nodes inside outline
+        plt.plot(coord_sec[section_axes[0]][mask_nodes].values,coord_sec[section_axes[1]][mask_nodes].values,',k') # plot nodes inside outline
 
     # Format spines
     ax.spines[spines_off].set_visible(False) # turn off axes spines listed in spines_off
-
     if 'bottom' not in spines_off: # bottom spine is visible
         if spine_yloc == None: # if no value, set bottom spine to minimum value of vertical axis
             spine_yloc = y_min
@@ -140,32 +127,45 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
 
     # Format ticks
     if xticks_vis == True: # horizontal axis ticks are visible
-        xticks = np.arange(x_min, x_max + 0.01, xstep) # all horizontal axis values
-        if offset_ticks_x == True: # offset x axis ticks to start at zero
-            ax.set_xticks(xticks, map(lambda x: "%g" % x, xticks-x_min),fontsize = textsize)
-        else:
-            ax.set_xticks(xticks, map(lambda x: "%g" % x, xticks-offset_ticks_x),fontsize = textsize) #offset x axis ticks to start at zero             
+        xticks = np.arange(x_min, x_max + xstep, xstep) # all horizontal axis values
+        plt.xticks(xticks, map(lambda x: "%g" % x, xticks-offset_ticks_x),fontsize = textsize) #offset x axis ticks to start at zero             
     else: # horizontal axis ticks are not visible
-        ax.tick_params(bottom = False, labelbottom = False)
-
+        plt.tick_params(bottom = False, labelbottom = False)
     if yticks_vis == True: # vertical axis ticks are visible
-        yticks = np.arange(y_min, y_max + 0.01, ystep) # all vertical axis values
-        if offset_ticks_y == True: # offset y axis ticks to start at zero
-            ax.set_yticks(yticks, map(lambda y: "%g" % y, yticks-y_min),fontsize = textsize)
-        else:
-            ax.set_yticks(yticks, map(lambda y: "%g" % y, yticks-offset_ticks_y),fontsize = textsize) #offset x axis ticks to start at zero
+        yticks = np.arange(y_min, y_max + ystep, ystep) # all vertical axis values
+        plt.yticks(yticks, map(lambda y: "%g" % y, yticks-offset_ticks_y),fontsize = textsize) #offset x axis ticks to start at zero
     else: # vertical axis ticks are not visible
-        ax.tick_params(left = False, labelleft = False)
+        plt.tick_params(left = False, labelleft = False)
     ax.tick_params(width = tick_width) # width of axis ticks
 
+    # Optional crop of cross section 
+    if crop_min_x != None or crop_max_x != None: #horizontal axis crop
+        if crop_min_x == None: # default minimum horizontal axis value if none given
+            crop_min_x = x_min
+        if crop_max_x == None: # default maximum horizontal axis value if none given
+            crop_max_x = x_max
+        x_diff = crop_max_x - crop_min_x
+        aspect_ratio = y_diff/x_diff # new aspect ratio for plot
+        fig.set_size_inches(fig_width, fig_width*aspect_ratio) # resize figure
+        plt.xlim(crop_min_x,crop_max_x) # crop axes
+    if crop_min_y != None or crop_max_y != None: #horizontal axis crop
+        if crop_min_y == None: # default minimum horizontal axis value if none given
+            crop_min_y = y_min
+        if crop_max_y == None: # default maximum horizontal axis value if none given
+            crop_max_y = y_max
+        y_diff = crop_max_y - crop_min_y
+        aspect_ratio = y_diff/x_diff # new aspect ratio for plot
+        fig.set_size_inches(fig_width, fig_width*aspect_ratio) # resize figure
+        plt.ylim(crop_min_y - 0.1,crop_max_y + 0.1) # crop axes
+    
     # Axes labels
     if xlabel != None: # horizontal axis label
-        ax.set_xlabel(xlabel,fontsize = textsize)
+        plt.xlabel(xlabel,fontsize = textsize)
     if ylabel != None: # vertical axis label
-        ax.set_ylabel(ylabel,fontsize = textsize)
+        plt.ylabel(ylabel,fontsize = textsize)
 
     print('Plotted cross section outline')
-    
+
     plt.savefig(folder + export_name, bbox_inches='tight', dpi=300) # save outline of cross section, high resolution
 
     return ind_sec,coord_sec,Xgrid,Ygrid,fig,ax,mask

@@ -58,12 +58,15 @@ def plot_variable(coord_sec, Xgrid, Ygrid, fig, ax, mask, section_axes = None,
             export_name (string):       name of exported file, default: 'Colour Map of Cross Section'
     """
     # Extrapolate parameter values on cross section
-    nan_ind = parameter_sec[variable].isnull() # indices of nodes where there are nan values
-    Zgrid=griddata((coord_sec.loc[~nan_ind,section_axes[0]],coord_sec.loc[~nan_ind,section_axes[1]]),\
-                   parameter_sec.loc[~nan_ind,variable], (Xgrid, Ygrid), method='cubic') # extrapolate non-nan parameter values to meshgrid
+    nan_ind = parameter_sec[variable].notnull() # indices of nodes with non-nan values
+    nan_ind = nan_ind.values # convert nan_ind to boolean array for coord_sec
+    Zgrid=griddata((coord_sec.loc[nan_ind,section_axes[0]],coord_sec.loc[nan_ind,section_axes[1]]),\
+                   parameter_sec.loc[nan_ind,variable], (Xgrid, Ygrid), method='cubic') # extrapolate non-nan parameter values to meshgrid
+    # print(Zgrid)
     if min_data != None or max_data != None: #if max_data or min_data has a value, remove any errors in extrapolation outside that range
         Zgrid=np.clip(Zgrid,min_data,max_data)
     Zgrid = np.ma.masked_where(~mask, Zgrid) #mask data outside of outline
+    # print(Zgrid)
     print('Extrapolated '+variable+' values to meshgrid')
 
     # Figure to plot on

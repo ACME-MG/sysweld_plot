@@ -28,10 +28,10 @@ outline_file        = '/home/wjux/projects/waam/outlines/outline_second_cut.xlsx
                        # title of outline file (optional); set to none to let code find outline
 crop_min_x          = None # crop cross section 
 crop_max_x          = None # crop cross section
-xstep               = 20 # tick interval on x-axis
+xstep               = 16 # tick interval on x-axis
 crop_min_y          = None # crop cross section 
 crop_max_y          = 105  # crop cross section 
-ystep               = 20 # tick interval on y-axis
+ystep               = 8 # tick interval on y-axis
 xlabel              = 'X (mm)' # x-axis title
 ylabel              = 'Y (mm)' # y-axis title
 nodes_vis           = True # visibility of mesh nodes
