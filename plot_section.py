@@ -30,7 +30,7 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
 
         Outline and Nodes:
             fig_width (float):          width of figure in inches, default: 15
-            outline_file (string):      name of excel file with list of points for outline
+            outline_file (string):      name of csv file with list of points for outline
             outline_width (float):      width of line for outline, default: 1
             outline_vis (bool):         plotting the outline of cross section, default: True
             nodes_vis (bool):           plotting the nodes of cross section, default: True
@@ -97,11 +97,11 @@ def plot_section(coord = None,section_axes = ['X','Y','Z'], section_coord = 0, f
     ax = plt.gca() # get current axes
     ax.set_title(plot_title, fontsize = textsize)
     ax.set_aspect('equal')
-    ax.set_xlim(x_min,x_max); ax.set_ylim(y_min - 0.1,y_max + 0.1) # Limits for axes (extra margin to plot outline)
+    ax.set_xlim(x_min - 0.1,x_max + 0.1); ax.set_ylim(y_min - 0.1,y_max + 0.1) # Limits for axes (extra margin to plot outline)
 
     # Find outline of cross section
     if outline_file != None: # outline taken from excel file
-        outline = pd.read_excel(outline_file) # import list of points for outline from excel file
+        outline = pd.read_csv(outline_file) # import list of points for outline from excel file
         outline = outline[[section_axes[0],section_axes[1]]] # only take columns for horizontal and vertical axes
         alpha_shape = Polygon(outline) # convert outline to shapely polygon
     else: # automatically find outline from nodes in cross section
